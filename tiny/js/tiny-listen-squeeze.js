@@ -1,13 +1,44 @@
+var tinySoundz;
+var tinyChoice;
 var tiny;
+var edgeOperators;
+var edgeChoice;
+var edgeOps;
 var mic;
 var analyzer;
-var edgeOps;
 
 // can add in more variables containing sound files and choose for trigSound function w/ random([array])
 function preload() {
+  tinySoundz = [
+    'assets/ama.wav',
+    'assets/anambra.wav',
+    'assets/cocktails.wav',
+    'assets/digital-aussi.wav',
+    'assets/ewans-toy.wav',
+    'assets/few-moves.wav',
+    'assets/flowz.wav',
+    'assets/friends-that-care.wav',
+    'assets/fruit-roti.wav',
+    'assets/gremlins.wav',
+    'assets/jon-jon.wav',
+    'assets/kalimtxo.wav',
+    'assets/nimmt-dich-nicht-zu-ernst.wav',
+    'assets/pelletier.wav',
+    'assets/spectre.wav',
+    'assets/tiny.sounds.wav',
+    'assets/weird-fishes.wav'
+  ];
+
+  edgeOperators = [
+    'assets/embers.wav',
+    'assets/breaking.wav'
+  ];
+
 //playsoundz is a call back function, it runs once the sound file is loaded
-edgeOps = loadSound('assets/embers.wav');
-tiny = loadSound('assets/tiny.sounds.wav');
+tinyChoice = random(tinySoundz);
+edgeChoice = random(edgeOperators);
+edgeOps = loadSound(edgeChoice);
+tiny = loadSound(tinyChoice, playsoundz());
 }
 
 function setup() {
@@ -18,11 +49,12 @@ function setup() {
   textAlign(CENTER);
   //envelope the sound nice
   tiny.amp(0);
-  playsoundz();
 }
 
 function playsoundz() {
 console.log('tiny sounds have arrived');
+print(tinyChoice);
+print(edgeChoice);
 //for listening in creepy
 mic = new p5.AudioIn();
 //starts listening creepier
