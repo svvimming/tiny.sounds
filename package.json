@@ -1,0 +1,24 @@
+{
+  "name": "tiny.sounds",
+  "version": "1.0.0",
+  "description": "tiny soundz",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/svvimming/tiny.sounds.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/svvimming/tiny.sounds/issues"
+  },
+  "homepage": "https://github.com/svvimming/tiny.sounds#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^1.19.1"
+  }
+}
