@@ -1,44 +1,12 @@
-var tinySoundz;
-var tinyChoice;
 var tiny;
-var edgeOperators;
-var edgeChoice;
 var edgeOps;
 var mic;
 var analyzer;
 
 // can add in more variables containing sound files and choose for trigSound function w/ random([array])
 function preload() {
-  tinySoundz = [
-    'assets/ama.wav',
-    'assets/anambra.wav',
-    'assets/cocktails.wav',
-    'assets/digital-aussi.wav',
-    'assets/ewans-toy.wav',
-    'assets/few-moves.wav',
-    'assets/flowz.wav',
-    'assets/friends-that-care.wav',
-    'assets/fruit-roti.wav',
-    'assets/gremlins.wav',
-    'assets/jon-jon.wav',
-    'assets/kalimtxo.wav',
-    'assets/nimmt-dich-nicht-zu-ernst.wav',
-    'assets/pelletier.wav',
-    'assets/spectre.wav',
-    'assets/tiny.sounds.wav',
-    'assets/weird-fishes.wav'
-  ];
-
-  edgeOperators = [
-    'assets/embers.wav',
-    'assets/breaking.wav'
-  ];
-
-//playsoundz is a call back function, it runs once the sound file is loaded
-tinyChoice = random(tinySoundz);
-edgeChoice = random(edgeOperators);
-edgeOps = loadSound(edgeChoice);
-tiny = loadSound(tinyChoice, playsoundz());
+edgeOps = loadSound('assets/edge-operators/embers.wav');
+tiny = loadSound('assets/tinies/tiny.sounds.wav', listenCreepy());
 }
 
 function setup() {
@@ -47,14 +15,14 @@ function setup() {
   background(255);
   textSize(30);
   textAlign(CENTER);
-  //envelope the sound nice
+
   tiny.amp(0);
+  tinyChoices = loadStrings('assets/tinies.txt');
+  edgeOptions = loadStrings('assets/edge-operators.txt');
 }
 
-function playsoundz() {
+function listenCreepy() {
 console.log('tiny sounds have arrived');
-print(tinyChoice);
-print(edgeChoice);
 //for listening in creepy
 mic = new p5.AudioIn();
 //starts listening creepier
@@ -68,6 +36,7 @@ analyzer.smooth(0.5);
 //write in parameter for start location in sound file********
 function trigSound(cue, amp, dur, buf, rate) {
   let env;
+  //envelope the sound nice
   //.Env() is deprecated for old versions so it's gotta be .Envelope nice
   env = new p5.Envelope();
   env.setExp(true);
@@ -75,8 +44,8 @@ function trigSound(cue, amp, dur, buf, rate) {
   env.setRange(amp, 0);
   //play the edge operators (tiny sounds), triggered in draw function
   buf.play(cue, rate, amp, buf.duration()*random(0.0, 1.0), dur+1.4);
-  env.play(tiny);
-  env.triggerRelease(tiny, 0.2+dur);
+  env.play(buf);
+  env.triggerRelease(buf, 0.2+dur);
 }
 
 function lilcurvy(level){
@@ -91,10 +60,10 @@ function draw() {
   var volume = mic.getLevel();
   let avg = analyzer.getLevel();
   //play soundz creepy
-  if (abs(volume-avg) > 0.005 && (frameCount) % 4 === 0) {
-    trigSound(random(0.0, 0.3), lilcurvy(volume)*0.25, random(0.5, 2.0), tiny, 1.0);
+  if (abs(volume-avg) > 0.005 && (frameCount) % 8 === 0) {
+    trigSound(random(0.0, 0.3), lilcurvy(volume)*0.5, random(0.5, 2.0), tiny, 1.0);
   } else if ((frameCount) % 12 === 0) {
-    trigSound(random(0.0, 0.1), volume, random(0.1, 0.2), edgeOps, 0.75);
+    trigSound(random(0.0, 0.1), 0, random(0.1, 0.2), edgeOps, 0.75);
   }
 
   //keep track of time...
@@ -130,4 +99,13 @@ function draw() {
   stroke(255, 204, 0);
   line(0, ylower, 19, ylower);
   text(time, width / 2, height / 2);
+}
+
+function mousePressed(){
+    let whodat = floor(random(tinyChoices.length));
+    let gotcha = floor(random(edgeOptions.length));
+    tiny.setPath('assets/tinies/'.concat(tinyChoices[whodat]));
+    console.log('assets/tinies/'.concat(tinyChoices[whodat]));
+    edgeOps.setPath('assets/edge-operators/'.concat(edgeOptions[gotcha]));
+    console.log('assets/tinies/'.concat(edgeOptions[gotcha]));
 }
