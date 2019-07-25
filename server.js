@@ -23,7 +23,7 @@ const data2 = fs.readdirSync(edgeOpsFolder);
 fs.writeFile('./tiny/assets/edge-operators.txt', '', 'utf8', callback);
 var j;
 for (j = 0; j < data2.length; j++) {
-  if(data1[j] !== '.DS_Store'){
+  if(data2[j] !== '.DS_Store'){
     console.log(data2[j]);
     fs.appendFileSync('./tiny/assets/edge-operators.txt', data2[j], 'utf8');
     if(j<data2.length-1) {fs.appendFileSync('./tiny/assets/edge-operators.txt', '\n', 'utf8')};

@@ -1,12 +1,16 @@
-var tiny;
-var edgeOps;
+var work, arounds, are;
+var the, best, nice, hehe;
 var mic;
 var analyzer;
 
-// can add in more variables containing sound files and choose for trigSound function w/ random([array])
 function preload() {
-edgeOps = loadSound('assets/edge-operators/embers.wav');
-tiny = loadSound('assets/tinies/tiny.sounds.wav', listenCreepy());
+work = loadSound('assets/edge-operators/embers.wav');
+arounds = loadSound('assets/edge-operators/embers.wav');
+are = loadSound('assets/edge-operators/embers.wav');
+the = loadSound('assets/tinies/tiny.sounds.wav');
+best = loadSound('assets/tinies/tiny.sounds.wav');
+nice = loadSound('assets/tinies/tiny.sounds.wav');
+hehe = loadSound('assets/tinies/tiny.sounds.wav', listenCreepy());
 }
 
 function setup() {
@@ -16,54 +20,49 @@ function setup() {
   textSize(30);
   textAlign(CENTER);
 
-  tiny.amp(0);
-  tinyChoices = loadStrings('assets/tinies.txt');
+  edgeOps = [work, arounds, are];
+  tinies = [the, best, nice, hehe];
   edgeOptions = loadStrings('assets/edge-operators.txt');
+  tinyChoices = loadStrings('assets/tinies.txt');
 }
 
 function listenCreepy() {
 console.log('tiny sounds have arrived');
 //for listening in creepy
 mic = new p5.AudioIn();
-//starts listening creepier
 mic.start();
-
+//for listening in creepier
 analyzer = new p5.Amplitude();
 analyzer.setInput(mic);
 analyzer.smooth(0.5);
 }
 
-//write in parameter for start location in sound file********
-function trigSound(cue, amp, dur, buf, rate) {
+function trigSound(cue, rate, level, dur, buf) {
   let env;
   //envelope the sound nice
-  //.Env() is deprecated for old versions so it's gotta be .Envelope nice
-  env = new p5.Envelope();
-  env.setExp(true);
-  env.setADSR(0.2, dur, 0.8, 1.2);
-  env.setRange(amp, 0);
-  //play the edge operators (tiny sounds), triggered in draw function
-  buf.play(cue, rate, amp, buf.duration()*random(0.0, 1.0), dur+1.4);
-  env.play(buf);
-  env.triggerRelease(buf, 0.2+dur);
-}
-
-function lilcurvy(level){
-  var curve = (0.5)*(pow(3, level)-1);
-  return curve;
+  env = new p5.Envelope(0.15, level, dur, level, 0.35, 0.0);
+  //env.setExp(true);
+  //play the tiny sounds, triggered in draw function
+  buf.play(cue, rate, env, buf.duration()*random(0.0, 1.0), dur+0.5);
+  env.play();
 }
 
 let time = 0;
+let i = 0;
+let j = 0;
+
 function draw() {
 
-  //listening to sound to trigger sound function nice
+  //listening creepy to trigger sound function nice
   var volume = mic.getLevel();
   let avg = analyzer.getLevel();
   //play soundz creepy
-  if (abs(volume-avg) > 0.005 && (frameCount) % 8 === 0) {
-    trigSound(random(0.0, 0.3), lilcurvy(volume)*0.5, random(0.5, 2.0), tiny, 1.0);
-  } else if ((frameCount) % 12 === 0) {
-    trigSound(random(0.0, 0.1), 0, random(0.1, 0.2), edgeOps, 0.75);
+  if (abs(volume-avg) > 0.005 && (frameCount) % 20 === 0) {
+    trigSound(random(0.0, 0.3), 1.0, volume*5, random(0.7, 2.5), tinies[(i % 3)]);
+    i++;
+  } else if ((frameCount) % 20 === 0) {
+    trigSound(random(0.0, 0.3), random(0.75, 1.15), volume, random(0.1, 0.2), edgeOps[(j % 3)]);
+    j++;
   }
 
   //keep track of time...
@@ -77,9 +76,9 @@ function draw() {
   } else if ((avg-squeeze) > volume) {
     time = 0;
   }
-  //if thresholds are not crossed after 60 seconds, trigger big soundz
+  //if thresholds are not crossed after 60 seconds, trigger a huge tiny
   if (0.01 > squeeze) {
-    trigSound(0, 1.0, random(2.0, 3.0), tiny, 1.0);
+    trigSound(0, 1.0, 1.0, random(4.0, 6.0), tinies[3]);
     time = 0;
   }
 
@@ -102,10 +101,18 @@ function draw() {
 }
 
 function mousePressed(){
-    let whodat = floor(random(tinyChoices.length));
-    let gotcha = floor(random(edgeOptions.length));
-    tiny.setPath('assets/tinies/'.concat(tinyChoices[whodat]));
-    console.log('assets/tinies/'.concat(tinyChoices[whodat]));
-    edgeOps.setPath('assets/edge-operators/'.concat(edgeOptions[gotcha]));
-    console.log('assets/tinies/'.concat(edgeOptions[gotcha]));
+    //generate random indices
+    let whodat = floor(random(edgeOptions.length));
+    let gotcha = floor(random(tinyChoices.length));
+    //grab new filepath for buffers with index
+    work.setPath('assets/edge-operators/'.concat(edgeOptions[whodat]));
+    arounds.setPath('assets/edge-operators/'.concat(edgeOptions[whodat]));
+    are.setPath('assets/edge-operators/'.concat(edgeOptions[whodat]));
+    console.log('assets/tinies/'.concat(edgeOptions[whodat]));
+
+    the.setPath('assets/tinies/'.concat(tinyChoices[gotcha]));
+    best.setPath('assets/tinies/'.concat(tinyChoices[gotcha]));
+    nice.setPath('assets/tinies/'.concat(tinyChoices[gotcha]));
+    hehe.setPath('assets/tinies/'.concat(tinyChoices[gotcha]));
+    console.log('assets/tinies/'.concat(tinyChoices[gotcha]));
 }
