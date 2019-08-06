@@ -2,12 +2,14 @@ var work, arounds, are;
 var the, best, nice, hehe;
 var mic;
 var analyzer;
+var amplitude;
+var creepy = false;
 
 //variables for tiny wordz & background
 let inconsolata;
 let randyX = [];
 let randyZ = [];
-let point = 25;
+let point = 30;
 let canvas = 800;
 let wordz, letz;
 let rflip = 0;
@@ -22,7 +24,7 @@ function preload() {
   best = loadSound('assets/tinies/tiny.sounds.mp3');
   nice = loadSound('assets/tinies/tiny.sounds.mp3');
   hehe = loadSound('assets/tinies/tiny.sounds.mp3', listenCreepy());
-  inconsolata = loadFont('assets/inconsolata.otf');
+  inconsolata = loadFont('assets/Inconsolata-Regular.ttf');
   wordz = loadStrings('assets/schizz.txt');
 }
 
@@ -42,12 +44,22 @@ function setup() {
 function listenCreepy() {
 console.log('tiny sounds have arrived');
 //for listening in creepy
-mic = new p5.AudioIn();
-mic.start();
+mic = new p5.AudioIn(boring());
+mic.start(letsCreep(), boring());
 //for listening in creepier
 analyzer = new p5.Amplitude();
 analyzer.setInput(mic);
 analyzer.smooth(0.5);
+
+amplitude = new p5.Amplitude();
+}
+
+function letsCreep(){
+  creepy = true;
+}
+
+function boring(){
+  creepy = false;
 }
 
 function buildarrays(){
@@ -65,6 +77,7 @@ function trigSound(cue, rate, level, dur, buf) {
   //play the tiny sounds, triggered in draw function
   buf.play(cue, rate, env, buf.duration()*random(0.0, 1.0), dur+0.5);
   env.play();
+  amplitude.setInput(buf);
 }
 
 function boasty(zig, zag, point, where, dat, oi) {
@@ -86,8 +99,13 @@ let j = 0;
 function draw() {
   background(rflip, gflip, bflip);
   //listening creepy to trigger sound function nice
-  var volume = mic.getLevel();
-  let avg = analyzer.getLevel();
+  if (creepy === true){
+    var volume = mic.getLevel();
+    var avg = analyzer.getLevel();
+  } else {
+    var volume = pow((pow(((mouseX*2)/(canvas*1.5)), 2)+pow(((mouseY*2)/canvas), 2)), 0.5);
+    var avg = pow((pow(((pmouseX*2)/(canvas*1.5)), 2)+pow(((pmouseY*2)/canvas), 2)), 0.5);
+  }
   //play soundz creepy
   if (abs(volume-avg) > 0.005 && (frameCount) % 20 === 0) {
     trigSound(random(0.0, 0.3), 1.0, (1/(1+exp(-5*(volume-0.25)))), random(0.7, 2.5), tinies[(i % 3)]);
@@ -98,11 +116,12 @@ function draw() {
     j++;
   }
   // draw tiny wordz
+  var ampout = (1.33*amplitude.getLevel());
   for(var k=0; (k<letz.length); k++){
     boasty(
       randyX[k],
       randyZ[k],
-      floor(point-((point/2)*(k/letz.length)))*(1/(1+exp(-5*(volume-0.05)))),
+      floor(point-((point/2)*(k/letz.length)))*(1/(1+exp(-5*(ampout-0.05)))),
       letz[k].length*k - 500, //floor((point-((point/2)*(k/letz.length)))*k),
       0, //floor((point-((point/2)*(k/letz.length)))*k),
       letz[k]);
@@ -129,6 +148,7 @@ function draw() {
 
 //to change soundz & colours
 function mousePressed(){
+    noLoop();
     //generate random indices
     let whodat = floor(random(edgeOptions.length));
     let gotcha = floor(random(tinyChoices.length));
@@ -147,4 +167,8 @@ function mousePressed(){
     nice.setPath('assets/tinies/'.concat(tinyChoices[gotcha]));
     hehe.setPath('assets/tinies/'.concat(tinyChoices[gotcha]));
     console.log('assets/tinies/'.concat(tinyChoices[gotcha]));
+}
+
+function mouseReleased(){
+  loop();
 }
