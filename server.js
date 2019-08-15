@@ -33,14 +33,3 @@ for (j = 0; j < data2.length; j++) {
 function callback(){
   console.log("nice data!");
 }
-
-
-// fs.readdirSync(testFolder).forEach(function (file) {
-//     fs.writeFileSync('./assets/test.txt', file, 'utf8');
-//   });
-// const data = new Uint8Array(Buffer.from('Hello hii'));
-//
-// fs.writeFile('msg', data, (err) => {
-//   if (err) throw err;
-//   console.log('sup u did it');
-// });
