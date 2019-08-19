@@ -3,6 +3,7 @@ var the, best, nice, hehe;
 var mic;
 var analyzer;
 var amplitude;
+var soundzOn = false;
 
 //variables for tiny wordz & background
 let inconsolata;
@@ -23,14 +24,13 @@ function preload() {
   the = loadSound('assets/tinies/tiny.sounds.mp3');
   best = loadSound('assets/tinies/tiny.sounds.mp3');
   nice = loadSound('assets/tinies/tiny.sounds.mp3');
-  hehe = loadSound('assets/tinies/tiny.sounds.mp3', listenCreepy());
+  hehe = loadSound('assets/tinies/tiny.sounds.mp3');
   inconsolata = loadFont('assets/Inconsolata-Regular.ttf');
   wordz = loadStrings('assets/schizz.txt');
 }
 
 function setup() {
   frameRate(60);
-  createCanvas(canvas*1.5, canvas, WEBGL);
   //background(255);
   edgeOps = [work, arounds, are];
   tinies = [the, best, nice, hehe];
@@ -39,11 +39,15 @@ function setup() {
   letz = split(wordz[0], ' ');
   //console.log(letz);
   buildarrays();
+  noLoop();
 }
 
 function listenCreepy() {
-console.log('tiny sounds have arrived');
-amplitude = new p5.Amplitude();
+  soundzOn = true;
+  createCanvas(canvas*1.5, canvas, WEBGL);
+  console.log('tiny sounds have arrived');
+  amplitude = new p5.Amplitude();
+  loop();
 }
 
 function buildarrays(){
@@ -81,51 +85,54 @@ let i = 0;
 let j = 0;
 
 function draw() {
-  background(rflip, gflip, bflip);
-  //listening creepy to trigger sound function nice
-  var volume = pow( (pow((accelerationX/cio), 2) + pow((accelerationY/cio), 2) + pow((accelerationZ/cio), 2) ), 0.5);
-  var avg = pow( (pow((pAccelerationX/cio), 2) + pow((pAccelerationY/cio), 2) + pow((pAccelerationZ/cio), 2) ), 0.5);
-  //play soundz creepy
-  if (abs(volume-avg) > 0.005 && (frameCount) % 20 === 0) {
-    trigSound(random(0.0, 0.3), 1.0, (1/(1+exp(-5*(volume-0.25)))), random(0.7, 2.5), tinies[(i % 3)]);
-    i++;
-  } else if ((frameCount) % 20 === 0) {
-    trigSound(random(0.0, 0.3), random(0.75, 1.15), (1/(1+exp(-1*(volume-0.5)))), random(0.1, 0.2), edgeOps[(j % 3)]);
-    j++;
-  }
-  // draw tiny wordz
-  var ampout = (1.33*amplitude.getLevel());
-  for(var k=0; (k<letz.length); k++){
-    boasty(
-      randyX[k],
-      randyZ[k],
-      floor(point-((point/2)*(k/letz.length)))*(1/(1+exp(-5*(ampout-0.05)))),
-      letz[k].length*k - 500, //floor((point-((point/2)*(k/letz.length)))*k),
-      0, //floor((point-((point/2)*(k/letz.length)))*k),
-      letz[k]);
-  }
+  if(soundzOn){
+    background(rflip, gflip, bflip);
+    //listening creepy to trigger sound function nice
+    var volume = pow( (pow((accelerationX/cio), 2) + pow((accelerationY/cio), 2) + pow((accelerationZ/cio), 2) ), 0.5);
+    var avg = pow( (pow((pAccelerationX/cio), 2) + pow((pAccelerationY/cio), 2) + pow((pAccelerationZ/cio), 2) ), 0.5);
+    //play soundz creepy
+    if (abs(volume-avg) > 0.005 && (frameCount) % 20 === 0) {
+      trigSound(random(0.0, 0.3), 1.0, (1/(1+exp(-5*(volume-0.25)))), random(0.7, 2.5), tinies[(i % 3)]);
+      i++;
+    } else if ((frameCount) % 20 === 0) {
+      trigSound(random(0.0, 0.3), random(0.75, 1.15), (1/(1+exp(-1*(volume-0.5)))), random(0.1, 0.2), edgeOps[(j % 3)]);
+      j++;
+    }
+    // draw tiny wordz
+    var ampout = (1.33*amplitude.getLevel());
+    for(var k=0; (k<letz.length); k++){
+      boasty(
+        randyX[k],
+        randyZ[k],
+        floor(point-((point/2)*(k/letz.length)))*(1/(1+exp(-5*(ampout-0.05)))),
+        letz[k].length*k - 500, //floor((point-((point/2)*(k/letz.length)))*k),
+        0, //floor((point-((point/2)*(k/letz.length)))*k),
+        letz[k]);
+    }
 
-  //keep track of time...
-  if(frameCount % 60 === 0){
-	   time = time + 1;
-     console.log(time);
-   }
-  //squeeze thresholds closer over 60s: reset timer if thresholds are crossed
-  let squeeze = 0.1**(1+time/30);
-  if (volume > (avg+squeeze)) {
-	  time = 0;
-  } else if ((avg-squeeze) > volume) {
-    time = 0;
-  }
-  //if thresholds are not crossed after 60 seconds, trigger a huge tiny
-  if (0.01 > squeeze) {
-    trigSound(0, 1.0, 1.0, random(4.0, 6.0), tinies[3]);
-    time = 0;
+    //keep track of time...
+    if(frameCount % 60 === 0){
+  	   time = time + 1;
+       console.log(time);
+     }
+    //squeeze thresholds closer over 60s: reset timer if thresholds are crossed
+    let squeeze = 0.1**(1+time/30);
+    if (volume > (avg+squeeze)) {
+  	  time = 0;
+    } else if ((avg-squeeze) > volume) {
+      time = 0;
+    }
+    //if thresholds are not crossed after 60 seconds, trigger a huge tiny
+    if (0.01 > squeeze) {
+      trigSound(0, 1.0, 1.0, random(4.0, 6.0), tinies[3]);
+      time = 0;
+    }
   }
 }
 
 //to change soundz & colours
 function mousePressed(){
+  if(soundzOn){
     noLoop();
     //generate random indices
     let whodat = floor(random(edgeOptions.length));
@@ -145,8 +152,11 @@ function mousePressed(){
     nice.setPath('assets/tinies/'.concat(tinyChoices[gotcha]));
     hehe.setPath('assets/tinies/'.concat(tinyChoices[gotcha]));
     console.log('assets/tinies/'.concat(tinyChoices[gotcha]));
+  }
 }
 
 function mouseReleased(){
-  loop();
+  if(soundzOn){
+    loop();
+  }
 }
