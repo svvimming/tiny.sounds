@@ -14,6 +14,7 @@ let wordz, letz;
 let rflip = 0;
 let gflip = 0;
 let bflip = 0;
+let cio = 100;
 
 function preload() {
   work = loadSound('assets/edge-operators/embers.mp3');
@@ -82,16 +83,14 @@ let j = 0;
 function draw() {
   background(rflip, gflip, bflip);
   //listening creepy to trigger sound function nice
-  var volume = pow((pow(((mouseX*2)/(canvas*1.5)), 2)+pow(((mouseY*2)/canvas), 2)), 0.5);
-  var avg = pow((pow(((pmouseX*2)/(canvas*1.5)), 2)+pow(((pmouseY*2)/canvas), 2)), 0.5);
-
+  var volume = pow( (pow((accelerationX/cio), 2) + pow((accelerationY/cio), 2) + pow((accelerationZ/cio), 2) ), 0.5);
+  var avg = pow( (pow((pAccelerationX/cio), 2) + pow((pAccelerationY/cio), 2) + pow((pAccelerationZ/cio), 2) ), 0.5);
   //play soundz creepy
   if (abs(volume-avg) > 0.005 && (frameCount) % 20 === 0) {
     trigSound(random(0.0, 0.3), 1.0, (1/(1+exp(-5*(volume-0.25)))), random(0.7, 2.5), tinies[(i % 3)]);
-    //1/(1+e**(-k(x-x0)))
     i++;
   } else if ((frameCount) % 20 === 0) {
-    trigSound(random(0.0, 0.3), random(0.75, 1.15), volume, random(0.1, 0.2), edgeOps[(j % 3)]);
+    trigSound(random(0.0, 0.3), random(0.75, 1.15), (1/(1+exp(-1*(volume-0.5)))), random(0.1, 0.2), edgeOps[(j % 3)]);
     j++;
   }
   // draw tiny wordz
