@@ -115,7 +115,8 @@ function draw() {
       //1/(1+e**(-k(x-x0)))
       i++;
     } else if ((frameCount) % 20 === 0) {
-      trigSound(random(0.0, 0.3), random(0.75, 1.15), (1/(1+exp(2-(3*volume)))), random(0.1, 0.2), edgeOps[(j % 3)]);
+      trigSound(random(0.0, 0.3), random(0.75, 1.15), (1/(1+exp(-5*(volume-1.0)))), random(0.1, 0.2), edgeOps[(j % 3)]);
+      console.log(volume);
       j++;
     }
     // draw tiny wordz

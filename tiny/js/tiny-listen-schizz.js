@@ -73,6 +73,7 @@ function trigSound(cue, rate, level, dur, buf) {
   let env;
   //envelope the sound nice
   env = new p5.Envelope(0.15, level, dur, level, 0.35, 0.0);
+  env.setADSR(0.15, dur, 0.8, 1.0);
   //env.setExp(true);
   //play the tiny sounds, triggered in draw function
   buf.play(cue, rate, env, buf.duration()*random(0.0, 1.0), dur+0.5);
@@ -108,11 +109,11 @@ function draw() {
   }
   //play soundz creepy
   if (abs(volume-avg) > 0.005 && (frameCount) % 20 === 0) {
-    trigSound(random(0.0, 0.3), 1.0, (1/(1+exp(-5*(volume-0.25)))), random(0.7, 2.5), tinies[(i % 3)]);
+    trigSound(random(0.0, 0.3), 1.0, (1/(1+exp(-5*(volume-0.25)))), random(1.0, 2.5), tinies[(i % 3)]);
     //1/(1+e**(-k(x-x0)))
     i++;
   } else if ((frameCount) % 20 === 0) {
-    trigSound(random(0.0, 0.3), random(0.75, 1.15), volume, random(0.1, 0.2), edgeOps[(j % 3)]);
+    trigSound(random(0.0, 0.3), random(0.75, 1.15), (1/(1+exp(2-(3*volume)))), random(0.1, 0.2), edgeOps[(j % 3)]);
     j++;
   }
   // draw tiny wordz
