@@ -18,13 +18,13 @@ let gflip = 0;
 let bflip = 0;
 
 function preload() {
-  work = loadSound('assets/edge-operators/embers.mp3');
-  arounds = loadSound('assets/edge-operators/embers.mp3');
-  are = loadSound('assets/edge-operators/embers.mp3');
-  the = loadSound('assets/tinies/tiny.sounds.mp3');
-  best = loadSound('assets/tinies/tiny.sounds.mp3');
-  nice = loadSound('assets/tinies/tiny.sounds.mp3');
-  hehe = loadSound('assets/tinies/tiny.sounds.mp3');
+  work = loadSound('assets/edge-operators/jacuzzi.mp3');
+  arounds = loadSound('assets/edge-operators/jacuzzi.mp3');
+  are = loadSound('assets/edge-operators/jacuzzi.mp3');
+  the = loadSound('assets/tinies/amsty.mp3');
+  best = loadSound('assets/tinies/amsty.mp3');
+  nice = loadSound('assets/tinies/amsty.mp3');
+  hehe = loadSound('assets/tinies/amsty.mp3');
   inconsolata = loadFont('assets/Inconsolata-Regular.ttf');
   wordz = loadStrings('assets/schizz.txt');
 }
@@ -115,7 +115,7 @@ function draw() {
       //1/(1+e**(-k(x-x0)))
       i++;
     } else if ((frameCount) % 20 === 0) {
-      trigSound(random(0.0, 0.3), random(0.75, 1.15), (1/(1+exp(-5*(volume-1.0)))), random(0.1, 0.2), edgeOps[(j % 3)]);
+      trigSound(random(0.0, 0.3), 1.0, (1/(1+exp(-5*(volume-1.0)))), random(0.1, 0.2), edgeOps[(j % 3)]);
       console.log(volume);
       j++;
     }
